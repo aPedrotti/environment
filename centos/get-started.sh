@@ -1,21 +1,22 @@
 #!/bin/bash
 
-yum update -y && yum upgrade -y \
-&& yum install git hyperv-daemons vim wget \
+yum update -y && \
+yum upgrade -y && \
+yum install apt-transport-https ca-certificates curl git hyperv-daemons nfs-common software-properties-common vim wget \
 
 && echo "getting newer epel-release" \
 && wget dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-12.noarch.rpm \
 && rpm -ihv epel-release-7-12.noarch.rpm \
 && rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org \
 
-&& echo  "Adding main aliases"
+&& echo  "Adding main aliases" &&
 cat <<EOF > ~/.bashrc
 # Folder Navigation
 PS1='\u@\h:\w\$ '
 alias l='ls -CF'
 alias ll='ls -alhF --color=auto'
 alias ls='ls --color=auto'
-alias update='sudo -- sh -c "yum update -y && apt upgrade -y"'
+alias update='sudo -- sh -c "yum update -y && yum upgrade -y"'
 
 # SERVICES
 alias sr='systemctl restart'
@@ -29,6 +30,7 @@ alias dcup='docker-compose up -d'
 alias dcd='docker-compose down'
 alias de='docker exec -it'
 alias ds='docker ps'
+alias dsl='docker service ls'
 alias di='docker images'
 alias dip='docker image prune -a'
 alias dcup='docker-compose up -d'
@@ -45,6 +47,7 @@ alias checkk8s='echo "## NODES ##" && kubectl get no \
 && echo "## RESOURCES ##" && kubectl get rs \
 && echo "## SERVICES ##" && kubectl get svc && kubectl get ing'
 alias k='kubectl'
+alias kga='kubectl get all'
 alias kno='kubectl get no'
 alias kpo='kubectl get po -o wide'
 alias kdp='kubectl get deploy'
@@ -60,7 +63,11 @@ alias kds='kubectl describe'
 alias kx='kubectl exec -it $1'
 alias kl='kubectl logs'
 
+complete -C /usr/bin/vault vault
+
 EOF
+&&
+. ~/.bashrc \
 
 && echo "# UPDATING KERNEL #" \
 && rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm \

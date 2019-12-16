@@ -96,13 +96,6 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-#if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-#    . /etc/bash_completion
-#fi
-
 
 ############ LIST OF CUSTOM ALIASES ############
 
@@ -150,7 +143,7 @@ alias dns='docker network ls'
 alias dl='docker logs'
 alias dr='docker restart'
 alias kctl='microk8s.kubectl'
-PS1='[\u@\h \W$(__docker_machine_ps1)]\$ '
+# PS1='[\u@\h \W$(__docker_machine_ps1)]\$ '
 
 
 ## KUBERNETES ##
@@ -176,6 +169,8 @@ alias kd='kubectl delete'
 alias kds='kubectl describe'
 alias kx='kubectl exec -it $1'
 alias kl='kubectl logs'
+
+complete -C /usr/bin/vault vault
 
 # Istio
 #export PATH="$PATH:/root/istio-1.3.0/bin"
