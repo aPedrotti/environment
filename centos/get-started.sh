@@ -2,14 +2,14 @@
 
 yum update -y && \
 yum upgrade -y && \
-yum install apt-transport-https ca-certificates curl git hyperv-daemons nfs-common software-properties-common vim wget \
+yum install -y apt-transport-https ca-certificates curl git hyperv-daemons nfs-common software-properties-common vim wget \
 
-&& echo "getting newer epel-release" \
-&& wget dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-12.noarch.rpm \
-&& rpm -ihv epel-release-7-12.noarch.rpm \
-&& rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org \
+echo "getting newer epel-release" && \
+wget dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-12.noarch.rpm && \
+rpm -ihv epel-release-7-12.noarch.rpm && \
+rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org && \
 
-&& echo  "Adding main aliases" &&
+echo  "Adding main aliases" &&
 cat <<EOF > ~/.bashrc
 # Folder Navigation
 PS1='\u@\h:\w\$ '
@@ -40,12 +40,12 @@ alias dl='docker logs'
 alias dr='docker restart'
 
 ## KUBERNETES ##
-alias checkk8s='echo "## NODES ##" && kubectl get no \
-&& echo "## PODS ##" && kubectl get po -o wide \
-&& echo "## DEPLOYS ##" && kubectl get deploy \
-&& echo "## NAMESPACES ##" && kubectl get ns \
-&& echo "## RESOURCES ##" && kubectl get rs \
-&& echo "## SERVICES ##" && kubectl get svc && kubectl get ing'
+alias checkk8s='echo "## NODES ##" && kubectl get no && \
+echo "## PODS ##" && kubectl get po -o wide && \
+echo "## DEPLOYS ##" && kubectl get deploy && \
+echo "## NAMESPACES ##" && kubectl get ns && \
+echo "## RESOURCES ##" && kubectl get rs && \
+echo "## SERVICES ##" && kubectl get svc && kubectl get ing'
 alias k='kubectl'
 alias kga='kubectl get all'
 alias kno='kubectl get no'
@@ -65,20 +65,19 @@ alias kl='kubectl logs'
 
 complete -C /usr/bin/vault vault
 
-EOF
-&&
-. ~/.bashrc \
+EOF && \
+. ~/.bashrc && \
 
-&& echo "# UPDATING KERNEL #" \
-&& rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm \
-&& yum --disablerepo="*" --enablerepo="elrepo-kernel" list available \
-&& yum --enablerepo=elrepo-kernel install kernel-ml -y \
-&& echo " Here is all your installed kernels: " \
+echo "# UPDATING KERNEL #" && \
+rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm && \
+yum --disablerepo="*" --enablerepo="elrepo-kernel" list available && \
+yum --enablerepo=elrepo-kernel install kernel-ml -y && \
+echo " Here is all your installed kernels: " && \
 
-&& echo "Updating inicialization to the newer one: " \
-&& grub2-editenv list \
-&& grub2-set-default 0 \
-&& grub2-mkconfig -o /boot/grub2/grub.cfg
+echo "Updating inicialization to the newer one: " && \
+grub2-editenv list && \
+grub2-set-default 0 && \
+grub2-mkconfig -o /boot/grub2/grub.cfg
 
 ## CENTOS 8 - latest epel
 # wget dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/e/epel-release-8-7.el8.noarch.rpm && rpm -ihv epel-release-8-7.el8.noarch.rpm
