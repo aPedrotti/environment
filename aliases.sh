@@ -148,11 +148,12 @@ alias kctl='microk8s.kubectl'
 
 ## KUBERNETES ##
 alias checkk8s='echo "## NODES ##" && kubectl get no \
-&& echo "## PODS ##" && kubectl get po -o wide \
 && echo "## DEPLOYS ##" && kubectl get deploy \
+&& echo "## PODS ##" && kubectl get po -o wide \
 && echo "## NAMESPACES ##" && kubectl get ns \
 && echo "## RESOURCES ##" && kubectl get rs \
-&& echo "## SERVICES ##" && kubectl get svc && kubectl get ing'
+&& echo "## SERVICES ##" && kubectl get svc \
+&& echo "## INGRESS ##" && kubectl get ing'
 alias k='kubectl'
 alias kga='kubectl get all'
 alias kno='kubectl get no'
