@@ -15,7 +15,7 @@ gpgcheck=1
 repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kube*
-EOF 
+EOF
 && \
 echo "Disabling IPv6" && \
 cat <<EOF > /etc/sysctl.d/k8s.conf
@@ -43,7 +43,6 @@ systemctl enable --now kubelet && systemctl start kubelet && \
 echo "CONFIGURING AUTOCOMPLETE" && \
 yum install -y bash-completion && \
 source <(kubectl completion bash) && \
-
 echo "# Baixar images de suporte para outras APIs do kubernets" && \
 kubeadm config images pull && \
 
