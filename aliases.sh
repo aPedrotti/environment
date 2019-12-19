@@ -173,6 +173,10 @@ alias kl='kubectl logs'
 
 complete -C /usr/bin/vault vault
 
+## GCLOUD ##
+alias g='gcloud'
+
+
 # Istio
 #export PATH="$PATH:/root/istio-1.3.0/bin"
 
