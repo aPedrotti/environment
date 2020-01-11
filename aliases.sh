@@ -93,7 +93,8 @@ PS1='\u@\h:\w\$ '
 alias l='ls -CF'
 alias ll='ls -alhF --color=auto'
 alias ls='ls --color=auto'
-alias update='sudo -- sh -c "apt update && apt upgrade"'
+#alias update='sudo -- sh -c "yum update && apt upgrade"'
+export HISTTIMEFORMAT='%F %T '
 # alias vi='vim:colorscheme bluewery'
 
 # SERVICES
@@ -136,6 +137,7 @@ alias checkk8s='echo "## NODES ##" && kubectl get no \
 && echo "## SERVICES ##" && kubectl get svc \
 && echo "## INGRESS ##" && kubectl get ing'
 alias k='kubectl'
+alias kg='kubectl get'
 alias kga='kubectl get all'
 alias kno='kubectl get no'
 alias kpo='kubectl get po -o wide'
