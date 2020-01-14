@@ -10,7 +10,7 @@ rpm -ihv epel-release-7-12.noarch.rpm && \
 rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org && \
 
 echo  "Adding main aliases" &&
-cat <<EOF > ~/.bashrc
+cat > ~/.bashrc <<EOF
 # Folder Navigation
 PS1='\u@\h:\w\$ '
 alias l='ls -CF'
@@ -48,7 +48,7 @@ echo "## RESOURCES ##" && kubectl get rs && \
 echo "## SERVICES ##" && kubectl get svc && kubectl get ing'
 alias k='kubectl'
 alias kga='kubectl get all'
-alias kno='kubectl get no'
+alias kno='kubectl get node -o wide'
 alias kpo='kubectl get po -o wide'
 alias kdp='kubectl get deploy'
 alias king='kubectl get ing'
