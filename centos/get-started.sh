@@ -1,15 +1,15 @@
 #!/bin/bash
 
-yum update -y && \
-yum upgrade -y && \
-yum install -y apt-transport-https ca-certificates curl git hyperv-daemons nfs-common software-properties-common vim wget \
+yum update -y
+yum upgrade -y
+yum install -y apt-transport-https ca-certificates curl git hyperv-daemons nfs-common software-properties-common vim wget
 
-echo "getting newer epel-release" && \
-wget dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-12.noarch.rpm && \
-rpm -ihv epel-release-7-12.noarch.rpm && \
-rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org && \
+echo "getting newer epel-release" 
+wget dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-12.noarch.rpm
+rpm -ihv epel-release-7-12.noarch.rpm
+rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
 
-echo  "Adding main aliases" &&
+echo  "Adding main aliases"
 cat > ~/.bashrc <<EOF
 # Folder Navigation
 PS1='\u@\h:\w\$ '
@@ -65,18 +65,8 @@ alias kl='kubectl logs'
 
 complete -C /usr/bin/vault vault
 
-EOF && \
-. ~/.bashrc && \
-
-echo "# UPDATING KERNEL #" && \
-rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm && \
-yum --disablerepo="*" --enablerepo="elrepo-kernel" list available && \
-yum --enablerepo=elrepo-kernel install kernel-ml -y && \
-echo " Here is all your installed kernels: " && \
-echo "Updating inicialization to the newer one: " && \
-grub2-editenv list && \
-grub2-set-default 0 && \
-grub2-mkconfig -o /boot/grub2/grub.cfg
+EOF
+. ~/.bashrc
 
 ## CENTOS 8 - latest epel
 # wget dl.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/e/epel-release-8-7.el8.noarch.rpm && rpm -ihv epel-release-8-7.el8.noarch.rpm
