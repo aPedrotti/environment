@@ -105,6 +105,7 @@ alias sp='systemctl stop'
 
 # Applications
 alias web='cd /var/www/html'
+alias guarida='cd ~/Documents/vscode/guarida'
 
 # Git
 alias gs='git status'
@@ -129,21 +130,26 @@ alias kctl='microk8s.kubectl'
 
 
 ## KUBERNETES ##
-alias checkk8s='echo "## NODES ##" && kubectl get no \
-&& echo "## DEPLOYS ##" && kubectl get deploy \
-&& echo "## PODS ##" && kubectl get po -o wide \
+alias ck8s='echo "## NODES ##" && kubectl get no \
 && echo "## NAMESPACES ##" && kubectl get ns \
 && echo "## RESOURCES ##" && kubectl get rs \
+&& echo "## DEPLOYS ##" && kubectl get deploy \
+&& echo "## PODS ##" && kubectl get po -o wide \
 && echo "## SERVICES ##" && kubectl get svc \
 && echo "## INGRESS ##" && kubectl get ing'
 alias k='kubectl'
+alias ka='kubectl apply -f'
 alias kg='kubectl get'
 alias kga='kubectl get all'
+alias kcm='kubectl get configmap'
+alias kcj='kubectl get cronjobs'
 alias kno='kubectl get node -o wide'
 alias kpo='kubectl get pod -o wide'
+alias kpoc='kubectl get po -o wide -l app=cron'
 alias kdp='kubectl get deploy'
 alias king='kubectl get ing'
 alias kns='kubectl get ns'
+alias kgs='kubectl get secrets'
 alias krs='kubectl get rs'
 alias kcns='kubectl get sa default -o jsonpath='{.metadata.namespace}''
 alias ksvc='kubectl get svc'
