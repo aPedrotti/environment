@@ -110,6 +110,7 @@ alias guarida='cd ~/Documents/vscode/guarida'
 # Git
 alias gs='git status'
 alias vai='git add . && git commit -m "soh vaiii" && git push origin master'
+alias pl='git pull'
 
 ## DOCKER ##
 alias d='docker'
