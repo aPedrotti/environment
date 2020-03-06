@@ -96,6 +96,7 @@ alias ls='ls --color=auto'
 #alias update='sudo -- sh -c "yum update && apt upgrade"'
 export HISTTIMEFORMAT='%F %T '
 # alias vi='vim:colorscheme bluewery'
+alias hosts='sudo vim /etc/hosts'
 
 # SERVICES
 alias sr='systemctl restart'
@@ -104,7 +105,7 @@ alias st='systemctl start'
 alias sp='systemctl stop'
 
 # Applications
-alias web='cd /var/www/html'
+alias www='cd /var/www/html'
 alias guarida='cd ~/Documents/vscode/guarida'
 
 # Git
