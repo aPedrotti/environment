@@ -78,7 +78,7 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 
-############ LIST OF CUSTOM ALIASES ############
+############ LIST OF CUSTOM ALIASES ############s
 
 # lista all available aliases
 alias aliases='alias -p'
@@ -144,6 +144,7 @@ alias kg='kubectl get'
 alias kga='kubectl get all'
 alias kcm='kubectl get configmap'
 alias kcj='kubectl get cronjobs'
+alias kgds='kubectl get daemonsets'
 alias kno='kubectl get node -o wide'
 alias kpo='kubectl get pod -o wide'
 alias kpoc='kubectl get po -o wide -l app=cron'
