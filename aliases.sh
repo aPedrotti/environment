@@ -98,6 +98,15 @@ export HISTTIMEFORMAT='%F %T '
 # alias vi='vim:colorscheme bluewery'
 alias hosts='sudo vim /etc/hosts'
 
+# SSH
+alias sshsgi='ssh root@10.10.10.186 -p 2512'
+alias ssh180='ssh root@10.10.10.180'
+alias sshimob='ssh root@10.10.10.35'
+alias sshawsapp='ssh root@guarida.com.br'
+alias sshawsdb='ssh root@dbmy.guarida.com.br'
+alias sshawsimg='ssh root@img.guarida.com.br'
+
+
 # SERVICES
 alias sr='systemctl restart'
 alias ss='systemctl status'
