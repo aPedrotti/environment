@@ -102,9 +102,9 @@ alias hosts='sudo vim /etc/hosts'
 alias sshsgi='ssh root@10.10.10.186 -p 2512'
 alias ssh180='ssh root@10.10.10.180'
 alias sshimob='ssh root@10.10.10.35'
-alias sshawsapp='ssh root@guarida.com.br'
-alias sshawsdb='ssh root@dbmy.guarida.com.br'
-alias sshawsimg='ssh root@img.guarida.com.br'
+alias sshawsapp='ssh -i ~/Documents/guarida-site.pem ec2-user@guarida.com.br'
+alias sshawsdb='ssh -i ~/Documents/guarida-site.pem ec2-user@dbmy.guarida.com.br'
+alias sshawsimg='ssh -i ~/Documents/guarida-site.pem ec2-user@img.guarida.com.br'
 
 
 # SERVICES
@@ -119,8 +119,9 @@ alias guarida='cd ~/Documents/vscode/guarida'
 
 # Git
 alias gs='git status'
-alias vai='git add . && git commit -m "soh vaiii" && git push origin master'
-alias pl='git pull'
+alias vaiii='git add . && git commit -m "soh vaiii" && git push origin master'
+alias vem='git pull origin master'
+alias gp='git push origin '
 
 ## DOCKER ##
 alias d='docker'
