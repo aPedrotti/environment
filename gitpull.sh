@@ -3,12 +3,15 @@ mkdir -p ~/vscode
 cd ~/
 
 #Structure
-guarida_folder=~/vscode/guarida
+guarida=~/vscode/guarida
 agenciavirtual=~/vscode/guarida/agenciavirtual
+sgi=~/vscode/guarida/sgi
+
 updmaster="git pull origin master"
 checkoutmaster="git checkout master"
-if [ ! -d $MOUNT_NAS_SGIFTP ]; then
-    mkdir -p $MOUNT_NAS_SGIFTP
+for folder in x; do
+    if [ ! -d $ ]; then
+    mkdir -p $
 else [
     cd $agenciavirtual
     $checkoutmaster
@@ -17,10 +20,10 @@ else [
 fi
 
 mkdir -p ~/vscode/guarida
+git clone https://github.com/guarida/agenciavirtual.git
+git clone https://github.com/guarida/condominium-financial.git
+git clone https://github.com/guarida/img.guarida.com.br.git
+git clone https://github.com/guarida/guarida.com.br.git
+git clone https://github.com/guarida/gua.rs.git
+git clone https://github.com/guarida/servers.git
 git clone https://github.com/guarida/sgi.git
-https://github.com/guarida/condominium-financial.git
-https://github.com/guarida/agenciavirtual.git
-https://github.com/guarida/guarida.com.br.git
-https://github.com/guarida/gua.rs.git
-https://github.com/guarida/servers.git
-https://github.com/guarida/img.guarida.com.br.git

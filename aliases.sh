@@ -99,13 +99,20 @@ export HISTTIMEFORMAT='%F %T '
 alias hosts='sudo vim /etc/hosts'
 
 # SSH
-alias sshsgi='ssh root@10.10.10.186 -p 2512'
+alias ssh35='ssh root@10.10.10.35'
+alias ssh36='ssh root@10.10.10.36'
+alias ssh158='ssh andre.pedrotti@10.10.10.158'
+alias ssh186='ssh root@10.10.10.186 -p 2512'
 alias ssh180='ssh root@10.10.10.180'
-alias sshimob='ssh root@10.10.10.35'
 alias sshawsapp='ssh -i ~/Documentos/guarida-site.pem ec2-user@guarida.com.br'
 alias sshawsdb='ssh -i ~/Documentos/guarida-site.pem ec2-user@dbmy.guarida.com.br'
 alias sshawsimg='ssh -i ~/Documentos/guarida-site.pem ec2-user@img.guarida.com.br'
-
+#GCP
+alias sshsql1='gcloud beta compute ssh --zone "us-central1-a" "mysql-server1" --project "guarida-imoveis"'
+alias sshsql2='gcloud beta compute ssh --zone "us-central1-a" "mysql-server2" --project "guarida-imoveis"'
+alias sshsql3='gcloud beta compute ssh --zone "us-central1-a" "mysql-server3" --project "guarida-imoveis"'
+alias sshpg='gcloud beta compute ssh --zone "us-central1-a" "postgresql-server1" --project "guarida-imoveis"'
+alias sshnfs='gcloud beta compute ssh --zone "us-central1-a" "nfs-server" --project "guarida-imoveis"'
 
 # SERVICES
 alias sr='systemctl restart'
@@ -113,7 +120,7 @@ alias ss='systemctl status'
 alias st='systemctl start'
 alias sp='systemctl stop'
 
-# Applications
+# Folders link
 alias www='cd /var/www/html'
 alias guarida='cd ~/Documents/vscode/guarida'
 alias projetos='cd ~/Documents/vscode/Projetos'
@@ -122,7 +129,8 @@ alias projetos='cd ~/Documents/vscode/Projetos'
 alias gs='git status'
 alias vaiii='git add . && git commit -m "soh vaiii" && git push origin master'
 alias vem='git pull origin master'
-alias gp='git push origin '
+alias gpl='git pull origin '
+alias gps='git push origin '
 
 ## DOCKER ##
 alias d='docker'
