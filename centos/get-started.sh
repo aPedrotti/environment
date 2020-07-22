@@ -1,8 +1,23 @@
 #!/bin/bash
 
 yum update -y
-yum upgrade -y
-yum install -y apt-transport-https ca-certificates curl git hyperv-daemons nfs-common software-properties-common vim wget
+yum install -y \
+  apt-transport-https \
+  bash-completion \
+  curl \
+  device-mapper-persistent-data \
+  ca-certificates \
+  git \
+  hyperv-daemons \
+  lvm2 \
+  net-tools \
+  nfs-common \
+  nfs-utils \
+  software-properties-common \
+  telnet \
+  vim \
+  yum-utils \
+  wget
 
 echo "getting newer epel-release" 
 wget dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-12.noarch.rpm
@@ -10,7 +25,7 @@ rpm -ihv epel-release-7-12.noarch.rpm
 rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
 
 echo  "Adding main aliases"
-cat > ~/.bashrc <<EOF
+cat <<EOF >> ~/.bashrc
 # Folder Navigation
 PS1='\u@\h:\w\$ '
 alias l='ls -CF'

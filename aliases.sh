@@ -89,7 +89,7 @@ alias cp='cp -i'
 alias mv='mv -i'
 
 # Folder Navigation
-PS1='\u@\h:\w\$ '
+PS1='\u@\h:\w\%~'
 alias l='ls -CF'
 alias ll='ls -alhF --color=auto'
 alias ls='ls --color=auto'
@@ -98,44 +98,8 @@ export HISTTIMEFORMAT='%F %T '
 # alias vi='vim:colorscheme bluewery'
 alias hosts='sudo vim /etc/hosts'
 
-# SSH
-alias ssh35='ssh root@10.10.10.35'
-alias ssh36='ssh root@10.10.10.36'
-alias ssh158='ssh andre.pedrotti@10.10.10.158'
-alias ssh186='ssh root@10.10.10.186 -p 2512'
-alias ssh180='ssh root@10.10.10.180'
-alias sshawsapp='ssh -i ~/Documentos/guarida-site.pem ec2-user@guarida.com.br'
-alias sshawsdb='ssh -i ~/Documentos/guarida-site.pem ec2-user@dbmy.guarida.com.br'
-alias sshawsimg='ssh -i ~/Documentos/guarida-site.pem ec2-user@img.guarida.com.br'
-#GCP
-alias sshsql1='gcloud beta compute ssh --zone "us-central1-a" "mysql-server1" --project "guarida-imoveis"'
-alias sshsql2='gcloud beta compute ssh --zone "us-central1-a" "mysql-server2" --project "guarida-imoveis"'
-alias sshsql3='gcloud beta compute ssh --zone "us-central1-a" "mysql-server3" --project "guarida-imoveis"'
-alias sshpg='gcloud beta compute ssh --zone "us-central1-a" "postgresql-server1" --project "guarida-imoveis"'
-alias sshnfs='gcloud beta compute ssh --zone "us-central1-a" "nfs-server" --project "guarida-imoveis"'
-
-# SERVICES
-alias sr='systemctl restart'
-alias ss='systemctl status'
-alias st='systemctl start'
-alias sp='systemctl stop'
-
-# Folders link
-alias www='cd /var/www/html'
-alias guarida='cd ~/Documents/vscode/guarida'
-alias projetos='cd ~/Documents/vscode/Projetos'
-
-# Git
-alias gs='git status'
-alias vaiii='git add . && git commit -m "soh vaiii" && git push origin master'
-alias vem='git pull origin master'
-alias gpl='git pull origin '
-alias gps='git push origin '
-
 ## DOCKER ##
 alias d='docker'
-alias dcup='docker-compose up -d'
-alias dcd='docker-compose down'
 alias de='docker exec -it'
 alias ds='docker ps'
 alias dsl='docker service ls'
@@ -174,6 +138,8 @@ alias kns='kubectl get ns'
 alias kgs='kubectl get secrets'
 alias krs='kubectl get rs'
 alias kcns='kubectl get sa default -o jsonpath='{.metadata.namespace}''
+alias kgw='kubectl get gw'
+alias kvs='kubectl get vs'
 alias ksvc='kubectl get svc'
 alias kgs='kubectl get secrets'
 alias kctx='kubectl config set-context $(kubectl config current-context) --namespace'
@@ -183,15 +149,81 @@ alias kds='kubectl describe'
 alias kx='kubectl exec -it $1'
 alias kl='kubectl logs'
 
+
+# Test servers
+alias ssh100='ssh root@10.10.10.100'
+alias ssh101='ssh root@10.10.10.101'
+alias ssh102='ssh root@10.10.10.102'
+alias ssh103='ssh root@10.10.10.103'
+alias ssh104='ssh root@10.10.10.104'
+alias ssh105='ssh root@10.10.10.105'
+alias ssh106='ssh root@10.10.10.106'
+alias ssh107='ssh root@10.10.10.107'
+
+# SSH
+alias ssh35='ssh root@10.10.10.35'
+alias ssh36='ssh root@10.10.10.36'
+alias ssh158='ssh andre.pedrotti@10.10.10.158'
+alias ssh186='ssh root@10.10.10.186 -p 2512'
+alias ssh180='ssh root@10.10.10.180'
+alias sshawsapp='ssh -i ~/Documentos/guarida-site.pem ec2-user@guarida.com.br'
+alias sshawsdb='ssh -i ~/Documentos/guarida-site.pem ec2-user@dbmy.guarida.com.br'
+alias sshawsimg='ssh -i ~/Documentos/guarida-site.pem ec2-user@img.guarida.com.br'
+#GCP
+alias sshsql1='gcloud beta compute ssh --zone "us-central1-a" "mysql-server1" --project "guarida-imoveis"'
+alias sshsql2='gcloud beta compute ssh --zone "us-central1-a" "mysql-server2" --project "guarida-imoveis"'
+alias sshsql3='gcloud beta compute ssh --zone "us-central1-a" "mysql-server3" --project "guarida-imoveis"'
+alias sshsql4='gcloud beta compute ssh --zone "us-central1-a" "mysql-server4" --project "guarida-imoveis"'
+alias sshpg='gcloud beta compute ssh --zone "us-central1-a" "postgresql-server1" --project "guarida-imoveis"'
+alias sshnfs='gcloud beta compute ssh --zone "us-central1-a" "nfs-server" --project "guarida-imoveis"'
+alias sshdocker='gcloud beta compute ssh --zone "us-central1-a" "swarm-server" --project "guarida-imoveis"'
+
+# SERVICES
+alias sr='systemctl restart'
+alias ss='systemctl status'
+alias st='systemctl start'
+alias sp='systemctl stop'
+
+# Folders link
+alias www='cd /var/www/html'
+alias guarida='cd ~/Documents/vscode/guarida'
+alias projetos='cd ~/Documents/vscode/Projetos'
+
+# Git
+alias gs='git status'
+alias vaiii='git add . && git commit -m "soh vaiii" && git push origin master'
+alias vem='git pull origin master'
+alias gp='git pull origin'
+alias gps='git push origin'
+
+
+# HASHICORP
+#Terraform
+alias tf="terraform"
+alias tfi="terraform init"
+alias tfc="terraform console"
+alias tfp="terraform plan"
+alias tfa="terraform apply"
+alias tfs="terraform show"
+
+#Vault
 complete -C /usr/bin/vault vault
 
 ## GCLOUD ##
 alias g='gcloud'
 
 
-# Istio
-#export PATH="$PATH:/root/istio-1.3.0/bin"
-
+#export PATH=/bin:/usr/bin:/usr/local/bin:/usr/sbin:/sbin:/usr/local/opt/ssh-copy-id/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Users/andre/Applications/google-cloud-sdk/bin:/Users/andre/Applications/istio-1.6.0/bin:/Users/andre/Applications/hashicorp
+export PATH=/bin:
+/usr/bin:
+/usr/local/bin:
+/usr/sbin:
+/sbin:
+/usr/local/opt/ssh-copy-id/bin:
+/Library/Frameworks/Python.framework/Versions/3.7/bin:
+/Users/andre/Applications/google-cloud-sdk/bin:
+/Users/andre/Applications/istio-1.6.0/bin:
+/Users/andre/Applications/hashicorp
 # Desfazer
 #unalias NAME
 

@@ -2,7 +2,19 @@
 
 export ZSH="/Users/andre/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
-plugins=(git)
+
+HIST_STAMPS="dd/mm/yyyy"
+plugins=(
+  osx
+  git
+  brew
+  docker
+  docker-compose
+  history
+  vagrant
+  zsh-syntax-highlighting
+  zsh-autosuggestions
+)
 source $ZSH/oh-my-zsh.sh
 
 ############ LIST OF CUSTOM ALIASES ############
@@ -80,8 +92,40 @@ alias kds='kubectl describe'
 alias kx='kubectl exec -it $1'
 alias kl='kubectl logs'
 
+# HASHICORP
+#Terraform
+alias tf="terraform"
+alias tfi="terraform init"
+alias tfc="terraform console"
+alias tfp="terraform plan"
+alias tfa="terraform apply"
+alias tfs="terraform show"
+
+#Vault
 complete -C /usr/bin/vault vault
 
 ## GCLOUD ##
 alias g='gcloud'
 
+
+source $ZSH/oh-my-zsh.sh
+export MANPATH="/usr/local/man:$MANPATH"
+export LANG=en_US.UTF-8
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else export EDITOR='atom'
+fi
+export PATH="$PATH:$HOME/.rvm/bin"
+export VAGRANT_HOME="~/Storage/vagrant.d"
+export VAGRANT_FORCE_COLOR=true
+export PATH="/usr/local/sbin:$PATH"
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/andre/Applications/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/andre/Applications/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/andre/Applications/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/andre/Applications/google-cloud-sdk/completion.zsh.inc'; fi
+export PATH=/bin:/usr/bin:/usr/local/bin:/usr/sbin:/sbin:/usr/local/opt/ssh-copy-id/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Users/andre/Applications:/Users/andre/Applications/google-cloud-sdk/bin:/Users/andre/Applications/istio-1.6.0/bin:/Users/andre/Applications/hashicorp:/usr/local/opt/coreutils/libexec/gnubin:/Users/andre/Library/Python/2.7/bin:/Users/andre/.minishift/cache/oc/v3.11.0/darwin
+
+
+[[ /usr/local/bin/kubectl ]] && source <(kubectl completion zsh)

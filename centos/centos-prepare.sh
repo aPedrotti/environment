@@ -1,7 +1,15 @@
 #!/bin/bash
 
-yum -y update
-yum -y install net-tools wget telnet yum-utils device-mapper-persistent-data lvm2
+yum -y update && 
+yum -y install \
+  bash-completion \
+  device-mapper-persistent-data \
+  lvm2 \
+  net-tools \
+  nfs-utils \
+  telnet \
+  wget \
+  yum-utils
 
 ### Add Docker repository.
 yum-config-manager \
@@ -12,7 +20,7 @@ yum-config-manager \
 yum -y update && yum -y install docker-ce
 
 ## Create /etc/docker directory.
-mkdir /etc/docker
+mkdir -p /etc/docker
 
 # Setup daemon from Cgroups to Systemd
 cat > /etc/docker/daemon.json <<EOF
@@ -33,8 +41,8 @@ mkdir -p /etc/systemd/system/docker.service.d
 
 # Restart Docker
 systemctl daemon-reload
-systemctl enable docker
-systemctl restart docker
+#systemctl enable docker
+#systemctl restart docker
 
 # Disable swap
 swapoff -a
@@ -59,11 +67,12 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
 
-yum -y install kubectl kubelet kubeadm
-systemctl  restart kubelet && systemctl enable kubelet
+#yum -y install kubectl kubelet kubeadm
+#systemctl restart kubelet && systemctl enable kubelet
 
 # Enable IP Forwarding
 echo '1' > /proc/sys/net/bridge/bridge-nf-call-iptables
+touch /etc/sysctl.d/k8s.conf && \
 cat <<EOF >  /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
@@ -72,8 +81,8 @@ EOF
 
 # Restarting services
 systemctl daemon-reload
-systemctl restart kubelet
+#systemctl restart kubelet
 
 # Install nfs utils for Kubernetes NFS driver
-yum -y install nfs-utils bash-completion
+# yum -y install nfs-utils bash-completion
 source <(kubectl completion bash)
