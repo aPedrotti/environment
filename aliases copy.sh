@@ -25,10 +25,10 @@ funcion(){
 
 --help(){
     echo "Type only:
-         'mac' to do update macs aliases 
-         'linux' to update aliases
-         or 
-         'go search for something else"
+        'mac' to do update macs aliases 
+        'linux' to update aliases
+        or 
+        'go search for something else"
 }
 
 case "$ENTRY" in

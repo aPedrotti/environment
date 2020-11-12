@@ -89,11 +89,10 @@ alias cp='cp -i'
 alias mv='mv -i'
 
 # Folder Navigation
-PS1='\u@\h:\w\%~'
+PS1="\u@\h:[\w]\\$\[$(tput sgr0)\]"
 alias l='ls -CF'
 alias ll='ls -alhF --color=auto'
 alias ls='ls --color=auto'
-#alias update='sudo -- sh -c "yum update && apt upgrade"'
 export HISTTIMEFORMAT='%F %T '
 # alias vi='vim:colorscheme bluewery'
 alias hosts='sudo vim /etc/hosts'
@@ -170,6 +169,7 @@ alias sshawsapp='ssh -i ~/Documentos/guarida-site.pem ec2-user@guarida.com.br'
 alias sshawsdb='ssh -i ~/Documentos/guarida-site.pem ec2-user@dbmy.guarida.com.br'
 alias sshawsimg='ssh -i ~/Documentos/guarida-site.pem ec2-user@img.guarida.com.br'
 #GCP
+alias sshdmp2='gcloud beta compute ssh --zone "us-central1-a" "mysql8-p02" --project "guarida-imoveis"'
 alias sshsql1='gcloud beta compute ssh --zone "us-central1-a" "mysql-server1" --project "guarida-imoveis"'
 alias sshsql2='gcloud beta compute ssh --zone "us-central1-a" "mysql-server2" --project "guarida-imoveis"'
 alias sshsql3='gcloud beta compute ssh --zone "us-central1-a" "mysql-server3" --project "guarida-imoveis"'
