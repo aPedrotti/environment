@@ -176,7 +176,9 @@ alias sshsql3='gcloud beta compute ssh --zone "us-central1-a" "mysql-server3" --
 alias sshsql4='gcloud beta compute ssh --zone "us-central1-a" "mysql-server4" --project "guarida-imoveis"'
 alias sshpg='gcloud beta compute ssh --zone "us-central1-a" "postgresql-server1" --project "guarida-imoveis"'
 alias sshnfs='gcloud beta compute ssh --zone "us-central1-a" "nfs-server" --project "guarida-imoveis"'
-alias sshdocker='gcloud beta compute ssh --zone "us-central1-a" "swarm-server" --project "guarida-imoveis"'
+alias sshweb='gcloud beta compute ssh --zone "us-central1-a" "webserver-p01" --project "guarida-imoveis" --ssh-flag="-p 2512"'
+alias sshmongo='gcloud beta compute ssh --zone "southamerica-east1-c" "mongodb-1-server-1" --project "guarida-imoveis"'
+alias sshlog='gcloud compute ssh log-server --zone us-central1-a --project guarida-imoveis'
 
 # SERVICES
 alias sr='systemctl restart'
