@@ -89,7 +89,7 @@ alias cp='cp -i'
 alias mv='mv -i'
 
 # Folder Navigation
-PS1="\u@\h:[\w]\\$\[$(tput sgr0)\]"
+PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 alias l='ls -CF'
 alias ll='ls -alhF --color=auto'
 alias ls='ls --color=auto'
@@ -193,6 +193,8 @@ alias projetos='cd ~/Documents/vscode/Projetos'
 
 # Git
 alias gs='git status'
+alias ga='git add -A'
+alias gm='git commit -m'
 alias vaiii='git add . && git commit -m "soh vaiii" && git push origin master'
 alias vem='git pull origin master'
 alias gp='git pull origin'

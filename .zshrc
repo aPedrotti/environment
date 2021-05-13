@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -8,7 +15,8 @@ PROMPT=${PROMPT/\u@\h:\w\%~}
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+#ZSH_THEME="robbyrussell"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -124,18 +132,22 @@ alias ssh36='ssh root@10.10.10.36'
 alias ssh158='ssh andre.pedrotti@10.10.10.158'
 alias ssh186='ssh root@10.10.10.186 -p 2512'
 alias ssh180='ssh root@10.10.10.180'
-alias sshawsapp='ssh -i ~/Documents/guarida-site.pem ec2-user@guarida.com.br'
+alias sshawsapp='ssh -i ~/Documents/guarida-site.pem ec2-user@aws.guarida.com.br'
 alias sshawsdb='ssh -i ~/Documents/guarida-site.pem ec2-user@dbmy.guarida.com.br'
 alias sshawsimg='ssh -i ~/Documents/guarida-site.pem ec2-user@img.guarida.com.br'
 #GCP
 alias sshdmp2='gcloud beta compute ssh --zone "us-central1-a" "mysql8-p02" --project "guarida-imoveis"'
-alias sshsql1='gcloud beta compute ssh --zone "us-central1-a" "mysql-server1" --project "guarida-imoveis"'
+alias sshsql1='gcloud beta compute ssh --zone "us-central1-a" "mysql-server1-new" --project "guarida-imoveis"'
 alias sshsql2='gcloud beta compute ssh --zone "us-central1-a" "mysql-server2" --project "guarida-imoveis"'
 alias sshsql3='gcloud beta compute ssh --zone "us-central1-a" "mysql-server3" --project "guarida-imoveis"'
 alias sshsql4='gcloud beta compute ssh --zone "us-central1-a" "mysql-server4" --project "guarida-imoveis"'
+alias sshpgdev='gcloud beta compute ssh --zone "us-central1-a" "postgresql-dev01" --project "guarida-imoveis"'
 alias sshpg='gcloud beta compute ssh --zone "us-central1-a" "postgresql-server1" --project "guarida-imoveis"'
 alias sshnfs='gcloud beta compute ssh --zone "us-central1-a" "nfs-server" --project "guarida-imoveis"'
 alias sshdocker='gcloud beta compute ssh --zone "us-central1-a" "swarm-server" --project "guarida-imoveis"'
+alias sshweb='gcloud beta compute ssh --zone "us-central1-a" "webserver-p01" --project "guarida-imoveis" --ssh-flag="-p 2512"'
+alias sshmongo='gcloud beta compute ssh --zone "us-central1-a" "mongodb-server1" --project "guarida-imoveis"'
+alias sshlog='gcloud compute ssh log-server --zone us-central1-a --project guarida-imoveis'
 
 # Test servers
 alias ssh100='ssh root@10.10.10.100'
@@ -156,9 +168,12 @@ alias sshaimg='ssh -i ~/Documents/guarida-site.pem ec2-user@img.guarida.com.br'
 
 # Git
 alias gs='git status'
+alias ga='git add -A'
+alias gm='git commit -m'
 alias vaiii='git add . && git commit -m "soh vaiii" && git push origin master'
 alias vem='git pull origin master'
 alias gp='git pull origin'
+alias gpm='git pull origin master'
 alias gps='git push origin'
 
 ## DOCKER ##
@@ -231,11 +246,14 @@ alias g='gcloud'
 
 
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/andre/Applications/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/andre/Applications/google-cloud-sdk/path.zsh.inc'; fi
+#if [ -f '/Users/andre/Applications/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/andre/Applications/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
-if [ -f '/Users/andre/Applications/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/andre/Applications/google-cloud-sdk/completion.zsh.inc'; fi
-export PATH=/bin:/usr/bin:/usr/local/bin:/usr/sbin:/sbin:/usr/local/opt/ssh-copy-id/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Users/andre/Applications:/Users/andre/Applications/google-cloud-sdk/bin:/Users/andre/Applications/istio-1.6.0/bin:/Users/andre/Applications/hashicorp:/usr/local/opt/coreutils/libexec/gnubin:/Users/andre/Library/Python/2.7/bin:/Users/andre/.minishift/cache/oc/v3.11.0/darwin
-
+#if [ -f '/Users/andre/Applications/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/andre/Applications/google-cloud-sdk/completion.zsh.inc'; fi
+export PATH=/bin:/usr/bin:/usr/local/bin:/usr/sbin:/sbin:/usr/local/opt/ssh-copy-id/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Users/andre/Applications/istio-1.6.0/bin:/Users/andre/Applications/hashicorp:/usr/local/opt/coreutils/libexec/gnubin:/Users/andre/Library/Python/2.7/bin:/Users/andre/.minishift/cache/oc/v3.11.0/darwin
+#/Users/andre/Applications/google-cloud-sdk/bin
 
 [[ /usr/local/bin/kubectl ]] && source <(kubectl completion zsh)
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
