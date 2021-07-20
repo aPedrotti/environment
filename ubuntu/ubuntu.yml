@@ -184,12 +184,15 @@
           cmd: code --install-extension '{{ item }}' 
         loop: 
           - ms-python.python
+          - ms-toolsai.jupyter
           - ms-azuretools.vscode-docker
           - bbenoist.vagrant
           - hashicorp.terraform
           - njpwerner.autodocstring
+          - mhutchie.git-graph
           - oderwat.indent-rainbow
           - redhat.vscode-yaml
+          - ms-ceintl.vscode-language-pack-pt-br
 
     - block: 
       - name: Install Docker Key
