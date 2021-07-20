@@ -169,16 +169,17 @@
         apt:
           name: code
       - name: Install Virtual Studio Code Extensions
+        become: no
         shell:
           cmd: code --install-extension '{{ item }}' 
         loop: 
           - ms-python.python
-          - puppet.puppet-vscode
           - ms-azuretools.vscode-docker
           - bbenoist.vagrant
           - hashicorp.terraform
-          - gruntfuggly.todo-tree
           - njpwerner.autodocstring
+          - oderwat.indent-rainbow
+          - redhat.vscode-yaml
 
     - block: 
       - name: Install Docker Key
@@ -230,11 +231,14 @@
     - block:
       - name: Installing Kubectl 1.16.0
         become: true
-        get_url:    
-          url: 'https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl'
-          dest: /usr/local/bin/kubectl
-          mode: 755
-          remote_src: yes          
+        shell:    
+          cmd: 'curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"'
+      - name: Move Kubectl 
+        shell:
+          cmd: 'mv kubectl /usr/local/bin/kubectl'
+      - name: Permission kubectl
+        shell:
+          cmd: 'chmod 755 /usr/local/bin/kubectl'
       - name: Downloading Kubectx and Kubens 
         become: true
         git:
@@ -267,7 +271,12 @@
         become: true
         apt:
           name: golang-go
-          
+    
+    - block:
+      - name: Installing Discord
+        apt: 
+          deb: https://discord.com/api/download?platform=linux&format=deb
+        
 # OPTIONAL:
 #  - PEEK - Lightweight Screen Recorder that can export as GIF
 #  - OBS-STUDIO - Screen Recorder and Casting Software 
@@ -312,7 +321,7 @@
           name: brave-browser
 
     - block:
-      - name: Adding Ulauncher Repository
+      - name: Adding Repository
         become: true
         apt_repository:
           repo: 'ppa:agornostal/ulauncher'
