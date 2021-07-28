@@ -186,6 +186,7 @@
           - ms-python.python
           - ms-toolsai.jupyter
           - ms-azuretools.vscode-docker
+          - ms-vscode-remote.remote-containers
           - bbenoist.vagrant
           - hashicorp.terraform
           - njpwerner.autodocstring
