@@ -80,9 +80,11 @@
           dest: ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
         when: ohmyzsh.rc != 0
       - name: Configuring Symlink for Python
-        shell:
-          become: yes
-          cmd: ln -s /usr/bin/python3.8 /usr/local/bin/python
+        become: yes
+        file:
+          src: "/usr/bin/python3"
+          dest: "/usr/bin/python"
+          state: link
 
     - name: Installing AWS CLI via pip3
       become: true
