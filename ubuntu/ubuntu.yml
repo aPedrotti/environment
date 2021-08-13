@@ -91,7 +91,19 @@
       pip:
         name: awscli
         executable: pip3
-
+    - block:
+      - name: Install MS Teams Key
+        become: true
+        apt_key:
+          url: https://packages.microsoft.com/keys/microsoft.asc
+          state: present
+       - name: Install MS Teams
+         become: true
+         apt:
+           name: teams
+           state: present
+           update_cache: yes
+           
     - block:
       - name: Install Google Key
         become: true
