@@ -97,13 +97,23 @@
         apt_key:
           url: https://packages.microsoft.com/keys/microsoft.asc
           state: present
-       - name: Install MS Teams
-         become: true
-         apt:
-           name: teams
-           state: present
-           update_cache: yes
-           
+      - name: Add MS Teams Repository
+        become: true
+        apt_repository:
+          repo: 'deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main'
+          state: present
+          filename: ms-teams
+      - name: Update Cache  
+        become: true
+        apt:
+          update_cache: yes
+      - name: Install MS Teams
+        become: true
+        apt:
+          update_cache: yes
+          name: teams
+          state: present
+
     - block:
       - name: Install Google Key
         become: true
@@ -267,11 +277,13 @@
         shell:    
           cmd: 'curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"'
       - name: Move Kubectl 
+        become: true
         shell:
           cmd: 'mv kubectl /usr/local/bin/kubectl'
       - name: Permission kubectl
+        become: true
         shell:
-          cmd: 'chmod 755 /usr/local/bin/kubectl'
+          cmd: 'chmod 770 /usr/local/bin/kubectl'
       - name: Downloading Kubectx and Kubens 
         become: true
         git:
