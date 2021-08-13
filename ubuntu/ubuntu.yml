@@ -122,26 +122,26 @@
           name: google-chrome-stable
 
     - block:
-      - name: Installing Vagrant 2.2.10
+      - name: Installing Vagrant 2.2.18
         become: true
         unarchive:
-          src: 'https://releases.hashicorp.com/vagrant/2.2.10/vagrant_2.2.10_linux_amd64.zip'
+          src: 'https://releases.hashicorp.com/vagrant/2.2.18/vagrant_2.2.18_linux_amd64.zip'
           dest: /usr/local/bin
           remote_src: yes
 
     - block:
-      - name: Installing Terraform 0.12.19
+      - name: Installing Terraform 1.0.4
         become: true
         unarchive:
-          src: 'https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip'
+          src: 'https://releases.hashicorp.com/terraform/1.0.4/terraform_1.0.4_linux_amd64.zip'
           dest: /usr/local/bin
           remote_src: yes
 
     - block:
-      - name: Installing Vault 1.5.0
+      - name: Installing Vault 1.8.1
         become: true
         unarchive:
-          src: 'https://releases.hashicorp.com/vault/1.5.0/vault_1.5.0_linux_amd64.zip'
+          src: 'https://releases.hashicorp.com/vault/1.8.1/vault_1.8.1_linux_amd64.zip'
           dest: /usr/local/bin
           remote_src: yes
 
