@@ -66,7 +66,7 @@ alias kctl='microk8s.kubectl'
 
 # Git
 alias gs='git status'
-alias ga='git add -A'
+alias ga='git add'
 alias gc='git checkout'
 alias gm='git commit -m'
 alias vaiii='git add . && git commit -m "soh vaiii" && git push origin master'
