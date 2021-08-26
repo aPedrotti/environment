@@ -319,6 +319,7 @@
     
     - block:
       - name: Installing Discord
+        become: true
         apt: 
           deb: https://discord.com/api/download?platform=linux&format=deb
         
