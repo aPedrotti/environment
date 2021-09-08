@@ -27,6 +27,7 @@ alias dcd='docker-compose down'
 alias dns='docker network ls'
 alias dl='docker logs'
 alias dr='docker restart'
+alias dm='docker machine'
 
 ## KUBERNETES ##
 alias ck8s='echo "## NODES ##" && kubectl get no \

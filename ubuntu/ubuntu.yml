@@ -27,6 +27,7 @@
           - htop
           - keepassxc
           - krita
+          - libarchive-tools
           - make
           - mlocate
           - ncdu
