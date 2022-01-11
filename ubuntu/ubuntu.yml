@@ -165,6 +165,14 @@
           dest: /usr/local/bin/gomplate
           mode: 755
           remote_src: yes
+    - block:
+      - name: Installing Kind
+        become: true
+        get_url:    
+          url: 'curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64'
+          dest: /usr/local/bin/kind
+          mode: 755
+          remote_src: yes
 
     - block:
       - name: Installing Stern 1.11.0
@@ -225,6 +233,12 @@
           - oderwat.indent-rainbow
           - redhat.vscode-yaml
           - ms-ceintl.vscode-language-pack-pt-br
+      # - name: Configure Virtual Studio Code Preferences # Must be reviewed
+      #   become: no # Must be reviewed
+      #   shell: # Must be reviewed
+      #     cmd: code --preferences '{{ item }}'  # Must be reviewed
+      #   loop:  # Must be reviewed
+      #     - "editor.wordWrap: on" # Must be reviewed
 
     - block: 
       - name: Install Docker Key
