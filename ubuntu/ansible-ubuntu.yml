@@ -25,10 +25,12 @@
         loop:
           - apt-transport-https
           - bash-completion
+          - build-essential 
           - ca-certificates
           - curl
           - dirmngr
           - docker-ce
+          - file
           - gedit
           - git
           - gnupg
@@ -45,6 +47,7 @@
           - mlocate
           - ncdu
           - python3-pip
+          - procps
           - software-properties-common
           - synaptic
           - tilix
@@ -62,6 +65,9 @@
           src: /usr/bin/python3
           dest: /usr/bin/python
           state: link
+      - name: Install Homebrew
+        shell: 
+          cmd: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     
     - block: ## Install Keys and Repos
       - name: Install MS Teams Key
@@ -173,7 +179,7 @@
         become: true
         apt:
           name: code
-      - name: Installing Virtual Studio Code Extensions
+      - name: Installing Visual Studio Code Extensions
         become: 'no'
         shell:
           cmd: code --install-extension '{{ item }}'
@@ -218,21 +224,21 @@
           become: true
           get_url:
             url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-linux-x86_64
+            #remote_src: 'yes'
             dest: /usr/local/bin/docker-compose
             mode: 755
-            remote_src: 'yes'
         - name: Installing Docker Machine Bash Completion
           become: true
           get_url:
             url: https://raw.githubusercontent.com/docker/machine/{{ docker_machine_bash_completion_version }}/contrib/completion/bash/docker-machine.bash
             dest: /etc/bash_completion.d/docker-machine
-            remote_src: 'yes'
+            #remote_src: 'yes'
         - name: Installing Docker-Compose Bash Completion
           become: true
           get_url:
             url: https://raw.githubusercontent.com/docker/compose/{{ docker_compose_completion_version }}/contrib/completion/bash/docker-compose
             dest: /etc/bash_completion.d/docker-compose
-            remote_src: 'yes'
+            #remote_src: 'yes'
         
     - block: # Kubernetes Stuffs 
         - name: Installing Kubectl latest
@@ -262,19 +268,24 @@
             - kubectx
             - kubens
         - name: Installing Kind {{ kind_version }}
+          shell:
+            cmd: curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.21.0/kind-linux-amd64
+            #remote_src: 'yes'
+        - name: Moving Kind
           become: true
-          get_url:
-            url: curl -Lo ./kind https://kind.sigs.k8s.io/dl/{{ kind_version }}/kind-linux-amd64
-            dest: /usr/local/bin/kind
-            mode: 755
-            remote_src: 'yes'
-        - name: Installing Stern {{ stern_version }} - allows you to tail multiple pods on Kubernetes and multiple containers within the pod. Each result is color coded for quicker debugging.
+          shell:
+            cmd: mv kind /usr/local/bin/kind
+        - name: Permission Kind
+          become: true
+          shell:
+            cmd: chmod 770 /usr/local/bin/kind
+        - name: Installing Stern {{ stern_version }} # allows you to tail multiple pods on Kubernetes and multiple containers within the pod. Each result is color coded for quicker debugging.
           become: true
           get_url:
             url: https://github.com/wercker/stern/releases/download/{{ stern_version }}/stern_linux_amd64
             dest: /usr/local/bin/stern
             mode: 755
-            remote_src: 'yes'
+            #remote_src: 'yes'
         
     - block: # Communicators
         - name: Installing Slack
@@ -334,6 +345,12 @@
           lineinfile:
             path: /home/{{ ansible_user }}/.zshrc
             line: autoload -U compinit && compinit
+            state: present
+          when: ohmyzsh.rc != 0
+        - name: Adding autoload to Stern
+          lineinfile:
+            path: /home/{{ ansible_user }}/.zshrc
+            line: source <(stern --completion=zsh)
             state: present
           when: ohmyzsh.rc != 0
         - name: Configuring plugins for ZSH
