@@ -15,7 +15,44 @@
     - stern_version: "1.11.0"
 
   tasks:
+    - block: # Disable IPv6
+      - name: Disable IPv6 as default
+        become: "yes"
+        lineinfile:
+            path: /etc/sysctl.conf
+            line: net.ipv6.conf.default.disable_ipv6=1
+            state: present
+      - name: Disable IPv6 configuration
+        become: "yes"
+        lineinfile:
+            path: /etc/sysctl.conf
+            line: net.ipv6.conf.all.disable_ipv6=1
+            state: present
+      - name: Disable IPv6 startup
+        become: "yes"
+        lineinfile:
+            path: /etc/sysctl.conf
+            line: net.ipv6.conf.lo.disable_ipv6=1
+            state: present
+      - name: Restart service
+        become: "yes"
+        shell:
+          cmd: "sysctl -p"
+      rescue:
+        - name: show failed task @ rescue
+          ansible.builtin.debug:
+            msg: "{{ ansible_failed_task }}"
+
+        - name: show failed task's result @ rescue
+          ansible.builtin.debug:
+            msg: "{{ ansible_failed_result }}"
+    
     - block: # Main Stuff
+      - name: Upgrade Defaults
+        become: true
+        apt:
+          upgrade: "yes"
+          update_cache: "yes"
       - name: Installing Linux Apps
         become: true
         apt:
@@ -35,9 +72,12 @@
           - git
           - gnupg
           - gnupg-agent
+          - gpg
           - flameshot
           - fonts-hack
           - htop
+          - linux-headers-6.2.0-39-generic
+          - linux-image-6.2.0-39-generic
           - kernelstub
           - keepassxc
           - krita
@@ -95,7 +135,7 @@
       - name: Install Google Repository
         become: true
         apt_repository:
-          repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
+          repo: deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main
           state: present
           filename: google-chrome
       - name: Add Hashicorp apt key
@@ -210,6 +250,7 @@
           - PKief.material-icon-theme
           - tumido.crd-snippets
           - rangav.vscode-thunder-client
+          - redhat.ansible
           - redhat.vscode-commons
           - redhat.vscode-yaml
     
@@ -367,6 +408,83 @@
             - kubectx.zsh
             - kubens.zsh
 
+## Security
+
+# Requirements
+# kernel 
+    - block:
+      - name: Update kernel startup
+        become: "yes"
+        shell:
+          cmd: "kernelstub -v -k /boot/vmlinuz-6.2.0-39-generic -i /boot/initrd.img-6.2.0-39-generic"
+
+
+# Cortex
+    - block: # Cortex - Install
+      - name: Cortex - Unpack
+        become: "yes"
+        ansible.builtin.shell:
+          cmd: "tar xf $HOME/Downloads/cortex-8.1.1.112729.tar.gz"
+      - name: Cortex - Create directory
+        become: "yes"
+        ansible.builtin.file:
+            path: "/etc/panw/"
+            state: directory
+            mode: "0755"
+      - name: Cortex - copy configuration
+        become: "yes"
+        ansible.builtin.copy:
+          src: "$HOME/Downloads/cortex.conf"
+          dest: "/etc/panw/cortex.conf"
+          mode: "0755" 
+      - name: Cortex - Install Packages
+        become: "yes"
+        ansible.builtin.apt: 
+          update_cache: "yes"
+          install_recommends: 'yes'
+          state: present
+          deb: "$HOME/Downloads/cortex-8.1.1.112729.deb"
+    - block: # Cortex - Execute
+      - name: Cortex - Execute Runtime
+        become: "yes"
+        shell:
+          cmd: "/opt/traps/bin/cytool runtime start all"
+      - name: Cortex - Generate logs
+        become: "yes"
+        shell:
+          cmd: "/opt/traps/bin/cytool log collect"
+    - block: # Cortex - Execute run
+      - name: Cortex - Execute Run
+        become: "yes"
+        ansible.builtin.shell:
+          cmd: "/opt/traps/bin/cytool scan start"
+      - name: Cortex - Check Scan
+        become: "yes"
+        ansible.builtin.shell:
+          cmd: "/opt/traps/bin/cytool scan query"
+
+    
+
+
+# SEP
+    - block: #  Symantec - SEP
+      - name: Installer permission
+        become: true
+        ansible.builtin.file:
+          src: "$HOME/Downloads/sep"
+          mode: "u+x"
+      - name: Installer permission
+        become: true
+        file:
+            path: sep
+            state: file
+            mode: 755
+
+# Global Protect
+
+
+# Office Internet Certificate 
+
 # OPTIONAL:
 
     - block: #  - PEEK - Lightweight Screen Recorder that can export as GIF
@@ -403,3 +521,6 @@
         apt:
           name: ulauncher
           state: absent
+
+    - block:
+      - name: 

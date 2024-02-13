@@ -1,9 +1,10 @@
 # Configuration
 
+Definitions to install and configure Security Modules and VPN
 
-## Base Configs 
- 
-```bash 
+## Base Configs
+
+```bash
 # Main packages 
 sudo apt update -y 
 sudo apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common 
@@ -15,14 +16,14 @@ sudo echo "net.ipv6.conf.all.disable_ipv6=1" >> /etc/sysctl.conf
 sudo echo "net.ipv6.conf.default.disable_ipv6=1" >> /etc/sysctl.conf 
 sudo echo "net.ipv6.conf.lo.disable_ipv6=1" >> /etc/sysctl.conf 
  
-sysctl -p 
+sysctl -p
 ```
 
 ## Kernel Setup
 
 ```bash
-dpkg --list |grep linux-image 
-sudo kernelstub -v -k /boot/vmlinuz-6.2.0-34-generic -i /boot/initrd.img-6.2.0-34-generic 
+dpkg --list |grep linux-image
+sudo kernelstub --dry-run -v -k /boot/vmlinuz-6.2.0-39-generic -i /boot/initrd.img-6.2.0-39-generic 
 sudo reboot 
 ```
 
@@ -37,10 +38,10 @@ Requirements:
 
 ```bash
 cd Cortex_XDR_Linux_Installers/X86_64 
-tar xf Linux_8-1-0_42616_deb.tar.gz 
+tar xf Linux_8-1-0_42616_deb.tar.gz
 sudo mkdir -p /etc/panw/ 
-sudo cp cortex.conf /etc/panw/ 
-chmod +x cortex-8.1.1.112729.deb 
+sudo cp cortex.conf /etc/panw/
+chmod +x cortex-8.1.1.112729.deb
 sudo apt install ./cortex-8.1.1.112729.deb 
 ```
 
@@ -64,6 +65,10 @@ sudo apt install ./cortex-8.1.1.112729.deb
 /opt/traps/bin/cytool scan start
 /opt/traps/bin/cytool scan query
 ```
+
+
+
+
 
 ## SEP
 
@@ -131,6 +136,10 @@ sudo apt-key add *NEW-SDCSS-KEY.asc
 
 sudo ./installagent.sh
 
+
+
+
+
 ## Global Protect
 
 Adicionar ao arquivo `/usr/lib/ssl/openssl.snf` o conteudo `Options = UnsafeLegacyRenegotiation`
@@ -138,6 +147,8 @@ Adicionar ao arquivo `/usr/lib/ssl/openssl.snf` o conteudo `Options = UnsafeLega
 ```bash
 sudo echo "Options = UnsafeLegacyRenegotiation" >> /usr/lib/ssl/openssl.snf
 ```
+
+
 
 ## Configuration for GWA
 
