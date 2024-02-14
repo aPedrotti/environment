@@ -61,20 +61,20 @@ sudo apt install ./cortex-8.1.1.112729.deb
 - Run all tools
 
 ```bash
-/opt/traps/bin/cytool runtime start all
+sudo /opt/traps/bin/cytool runtime start all
 ```
 
 - Generates logs
 
 ```bash
-/opt/traps/bin/cytool log collect
+sudo /opt/traps/bin/cytool log collect
 ```
 
 - Run and check a scan
 
 ```bash
-/opt/traps/bin/cytool scan start
-/opt/traps/bin/cytool scan query
+sudo /opt/traps/bin/cytool scan start
+sudo /opt/traps/bin/cytool scan query
 ```
 
 

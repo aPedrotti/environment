@@ -227,7 +227,7 @@
         apt:
           name: code
       - name: Installing Visual Studio Code Extensions
-        become: 'no'
+        become: false
         shell:
           cmd: code --install-extension '{{ item }}'
         loop:
@@ -355,7 +355,7 @@
           register: ohmyzsh
           ignore_errors: true
         - name: Installing Oh-My-zsh
-          become: 'no'
+          become: false
           shell:
             cmd: curl -fsL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | bash
             warn: false
@@ -371,6 +371,7 @@
             repo: https://github.com/romkatv/powerlevel10k.git
             dest: $HOME/.oh-my-zsh/custom/themes/powerlevel10k
           when: ohmyzsh.rc != 0
+        # Plugins
         - name: Configure Terminal Extension zsh-syntax-highlighting - It enables highlighting of commands whilst they are typed at a zsh prompt into an interactive terminal.
           git:
             repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
@@ -409,7 +410,7 @@
           lineinfile:
             path: /home/{{ ansible_user }}/.zshrc
             regexp: ^plugins=
-            line: plugins=(git docker docker-compose zsh-syntax-highlighting zsh-autosuggestions)
+            line: plugins=(ansible docker docker-compose git kube-ps1 kubectl terraform sudo web-search zsh-syntax-highlighting zsh-autosuggestions)
         - name: Creating ZSH Completion
           file:
             src: /opt/kube/completion/{{ item }}
@@ -490,8 +491,9 @@
       - name: Installer permission
         become: true
         file:
-            path: sep
-            state: file
+            path: /home/{{ ansible_user  }}/Downloads/sep
+            owner: {{ ansible_user }}
+            group: {{ ansible_user }}
             mode: 755
 
 # Global Protect
