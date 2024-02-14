@@ -22,8 +22,19 @@ sysctl -p
 ## Kernel Setup
 
 ```bash
+sudo apt install -y \
+ linux-buildinfo-6.2.0-34-generic \
+ linux-cloud-tools-6.2.0-34-generic \
+ linux-image-6.2.0-34-generic \
+ linux-headers-6.2.0-34-generic \
+ linux-modules-6.2.0-34-generic \
+ linux-modules-extra-6.2.0-34-generic \
+ linux-hwe-6.2-headers-6.2.0-34 \
+ linux-hwe-6.2-tools-6.2.0-34 \
+ linux-hwe-6.2-cloud-tools-6.2.0-34 \
+ linux-tools-6.2.0-34-generic
 dpkg --list |grep linux-image
-sudo kernelstub --dry-run -v -k /boot/vmlinuz-6.2.0-39-generic -i /boot/initrd.img-6.2.0-39-generic 
+sudo kernelstub --dry-run -v -k /boot/vmlinuz-6.2.0-34-generic -i /boot/initrd.img-6.2.0-34-generic 
 sudo reboot 
 ```
 
