@@ -1,9 +1,19 @@
+# Pre-Reques:
+## sudo apt update && sudo apt install ansible -y
+
+# Execute first run - kernel upgrade
+# ansible-playbook playbook.yml --ask-become
+
+# Execute other operations after upgrade
+# ansible-playbook playbook.yml --ask-become --start-at-task ''
+
 - name: Preparing Workstation
   hosts: localhost
   connection: local
   gather_facts: true
   vars:
     - ansible_user: "andre"
+    - kernel_version: "6.2.0-34"
     - docker_compose_version: "v2.7.0"
     - docker_machine_bash_completion_version: "v0.16.0"
     - docker_compose_completion_version: "1.26.2"
@@ -16,7 +26,11 @@
     - stern_version: "1.11.0"
 
   tasks:
-    - block: # Disable IPv6
+    - block: # Networking
+      - name: Enable Firewall
+        become: true
+        ufw:
+          state: enabled
       - name: Disable IPv6 as default
         become: true
         lineinfile:
@@ -46,6 +60,97 @@
         - name: show failed task's result @ rescue
           ansible.builtin.debug:
             msg: "{{ ansible_failed_result }}"
+
+    - block: # kernel upgrade
+      - name: Upgrade Defaults
+        become: true
+        apt:
+          upgrade: "yes"
+          update_cache: "yes"
+      - name: Installing kernel deps
+        become: true
+        apt:
+          name: '{{ item }}'
+          install_recommends: 'yes'
+          state: present
+        loop:
+          - linux-buildinfo-{{ kernel_version }}-generic
+          - linux-cloud-tools-{{ kernel_version }}-generic
+          - linux-image-{{ kernel_version }}-generic
+          - linux-headers-{{ kernel_version }}-generic
+          - linux-modules-{{ kernel_version }}-generic
+          - linux-modules-extra-{{ kernel_version }}-generic
+          - linux-hwe-6.2-headers-{{ kernel_version }}
+          - linux-hwe-6.2-tools-{{ kernel_version }}
+          - linux-hwe-6.2-cloud-tools-{{ kernel_version }}
+          - linux-tools-{{ kernel_version }}-generic
+      - name: Update kernel startup
+        become: true
+        shell:
+          cmd: "kernelstub -v -k /boot/vmlinuz-{{ kernel_version }}-generic -i /boot/initrd.img-{{ kernel_version }}-generic"
+        when: 
+
+    - block: ## Install Keys and Repos
+      - name: Install External Keys
+        become: true
+        apt_key:
+          url: '{{ item  }}'
+          state: present
+        loop: 
+          - "https://packages.microsoft.com/keys/microsoft.asc"
+          - "https://dl.google.com/linux/linux_signing_key.pub"
+          - '{{ hashicorp_repository_key_url }}'
+          - "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+          - "https://download.docker.com/linux/ubuntu/gpg"
+          - "https://brave-browser-apt-release.s3.brave.com/brave-core.asc"
+
+      - name: Add Repositories
+        become: true
+        apt_repository:
+          repo: deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main
+          state: present
+          filename: ms-teams
+      - name: Install VSCode Repository
+        become: true
+        apt_repository:
+          repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
+          state: present
+          filename: vscode
+      - name: Install Google Repository
+        become: true
+        apt_repository:
+          repo: deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main
+          state: present
+          filename: google-chrome
+        when: ansible_pkg_mgr == 'apt'
+      - name: Add Hashicorp apt repo
+        apt_repository:
+          repo: deb {{ hashicorp_repository_url }} {{ ansible_distribution_release }} main
+          state: present
+        become: true
+        when: ansible_pkg_mgr == 'apt'
+      - name: Install Google Cloud SDK Repository
+        become: true
+        apt_repository:
+          repo: deb [arch=amd64] https://packages.cloud.google.com/apt cloud-sdk main
+          state: present
+          filename: google-cloud-sdk
+      - name: Install Docker Repository
+        become: true
+        apt_repository:
+          repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+          state: present
+          filename: docker-ce
+      - name: Install Brave Repository
+        become: true
+        apt_repository:
+          repo: deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main
+          state: present
+          filename: brave
+      - name: Update Cache
+        become: true
+        apt:
+          update_cache: 'yes'
     
     - block: # Main Stuff
       - name: Upgrade Defaults
@@ -60,6 +165,7 @@
           install_recommends: 'yes'
           state: present
         loop:
+          - ansible-lint
           - apt-transport-https
           - bash-completion
           - build-essential 
@@ -75,16 +181,6 @@
           - flameshot
           - fonts-hack
           - htop
-          - linux-buildinfo-6.2.0-34-generic
-          - linux-cloud-tools-6.2.0-34-generic
-          - linux-image-6.2.0-34-generic
-          - linux-headers-6.2.0-34-generic
-          - linux-modules-6.2.0-34-generic
-          - linux-modules-extra-6.2.0-34-generic
-          - linux-hwe-6.2-headers-6.2.0-34
-          - linux-hwe-6.2-tools-6.2.0-34
-          - linux-hwe-6.2-cloud-tools-6.2.0-34
-          - linux-tools-6.2.0-34-generic
           - kernelstub
           - keepassxc
           - krita
@@ -107,7 +203,7 @@
           - wget
         
       - name: Configuring Symlink for Python
-        become: 'yes'
+        become: true
         file:
           src: /usr/bin/python3
           dest: /usr/bin/python
@@ -116,84 +212,6 @@
         shell: 
           cmd: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-    - block: ## Install Keys and Repos
-      - name: Install MS Teams Key
-        become: true
-        apt_key:
-          url: https://packages.microsoft.com/keys/microsoft.asc
-          state: present
-      - name: Add MS Teams Repository
-        become: true
-        apt_repository:
-          repo: deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main
-          state: present
-          filename: ms-teams
-      - name: Install VSCode Repository
-        become: true
-        apt_repository:
-          repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
-          state: present
-          filename: vscode
-      - name: Install Google Key
-        become: true
-        apt_key:
-          url: https://dl.google.com/linux/linux_signing_key.pub
-          state: present
-      - name: Install Google Repository
-        become: true
-        apt_repository:
-          repo: deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main
-          state: present
-          filename: google-chrome
-      - name: Add Hashicorp apt key
-        apt_key:
-          url: '{{ hashicorp_repository_key_url }}'
-          state: present
-        become: true
-        when: ansible_pkg_mgr == 'apt'
-      - name: Add Hashicorp apt repo
-        apt_repository:
-          repo: deb {{ hashicorp_repository_url }} {{ ansible_distribution_release }} main
-          state: present
-        become: true
-        when: ansible_pkg_mgr == 'apt'
-      - name: Install Google Cloud SDK Key
-        become: true
-        apt_key:
-          url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-          state: present
-      - name: Install Google Cloud SDK Repository
-        become: true
-        apt_repository:
-          repo: deb [arch=amd64] https://packages.cloud.google.com/apt cloud-sdk main
-          state: present
-          filename: google-cloud-sdk
-      - name: Install Docker Key
-        become: true
-        apt_key:
-          url: https://download.docker.com/linux/ubuntu/gpg
-          state: present
-      - name: Install Docker Repository
-        become: true
-        apt_repository:
-          repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
-          state: present
-          filename: docker-ce
-      - name: Install Brave Key
-        become: true
-        apt_key:
-          url: https://brave-browser-apt-release.s3.brave.com/brave-core.asc
-          state: present
-      - name: Install Brave Repository
-        become: true
-        apt_repository:
-          repo: deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main
-          state: present
-          filename: brave
-      - name: Update Cache
-        become: true
-        apt:
-          update_cache: 'yes'
     
     - block: # Install DevOps Main Packages
       - name: Installing AWS CLI via pip3
@@ -201,31 +219,18 @@
         pip:
           name: awscli
           executable: pip3
-      - name: Installing Google Chrome
+      - name: Installing Linux Apps
         become: true
         apt:
-          name: google-chrome-stable
-      - name: Installing Google Cloud SDK
-        become: true
-        apt:
-          name: google-cloud-sdk
-          state: absent
-      - name: Installing Hashicorp Terraform
-        become: true
-        apt:
-          name: terraform
-      - name: Installing Hashicorp Vault
-        become: true
-        apt:
-          name: vault
-      - name: Installing Hashicorp Vagrant
-        become: true
-        apt:
-          name: vagrant
-      - name: Installing Visual Studio Code
-        become: true
-        apt:
-          name: code
+          name: '{{ item }}'
+          install_recommends: 'yes'
+          state: present
+        loop:
+          - code
+          - terraform
+          - vault
+          - vagrant
+      
       - name: Installing Visual Studio Code Extensions
         become: false
         shell:
@@ -260,6 +265,15 @@
           - redhat.ansible
           - redhat.vscode-commons
           - redhat.vscode-yaml
+      #- name: Installing Google Chrome
+      #  become: true
+      #  apt:
+      #    name: google-chrome-stable
+      #- name: Installing Google Cloud SDK
+      #  become: true
+      #  apt:
+      #    name: google-cloud-sdk
+      #    state: absent
     
     - block: # Docker Stuff
         - name: Installing Docker
@@ -269,7 +283,7 @@
             install_recommends: "yes"
             state: "present"
         - name: Adding existing user to group Docker
-          become: 'yes'
+          become: true
           user:
             name: '{{ ansible_user }}'
             groups: docker
@@ -361,7 +375,7 @@
             warn: false
           when: ohmyzsh.rc != 0
         - name: Changing Default Shell to ZSH
-          become: 'yes'
+          become: true
           user:
             name: '{{ ansible_user }}'
             shell: /bin/zsh
@@ -421,15 +435,6 @@
             - _kubens.zsh
 
 ## Security
-
-# Requirements
-# kernel 
-    - block:
-      - name: Update kernel startup
-        become: true
-        shell:
-          cmd: "kernelstub -v -k /boot/vmlinuz-6.2.0-34-generic -i /boot/initrd.img-6.2.0-34-generic"
-
 
 # Cortex
     - block: # Cortex - Install
@@ -492,8 +497,8 @@
         become: true
         file:
             path: /home/{{ ansible_user  }}/Downloads/sep
-            owner: {{ ansible_user }}
-            group: {{ ansible_user }}
+            owner: '{{ ansible_user }}'
+            group: '{{ ansible_user }}'
             mode: 755
 
 # Global Protect

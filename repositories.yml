@@ -1,0 +1,58 @@
+- name: Preparing Workstation
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    - ansible_user: "andre"
+  tasks:
+    - block: # DEVOPS
+      - name: Devops
+        git:
+          repo: git@gitlab.gerdau.digital:devops/{{ item }}.git
+          dest: /home/{{ ansible_user }}/code/gerdau/devops/{{ item }}
+        loop:
+          - a2a
+          - gitlab-cicd
+          - cronjobs
+          - platform-eks
+          - platform-rancher
+          - terraform-enterprise-helm
+          - platform-rancher
+          - helm-devops
+          - helm-chart-sonarqube
+          - terraform-enterprise-helm
+      
+
+    - block: # IT LABS
+      - name: IT Labs
+        git:
+          repo: git@gitlab.gerdau.digital:ITLabs/{{ item }}.git
+          dest: /home/{{ ansible_user }}/code/gerdau/itlabs/{{ item }}
+        loop:
+          - example-datalake
+          - example-dotnet
+          - example-nodejs
+          - example-openjdk
+          - example-package-npm
+          - example-python
+          - example-python-flask
+          - example-terraform
+          - example-react
+          - example-react-cloudfront
+          - external-logs-example
+          - external-logs-example-m3-api
+          
+
+    - block: # TEMPLATES
+      - name: Templates
+        git:
+          repo: git@gitlab.gerdau.digital:Templates/{{ item }}.git
+          dest: /home/{{ ansible_user }}/code/gerdau/Templates/{{ item }}
+        loop: 
+          - datalake
+          - ecs
+          - jobs
+          - mulesoft4
+          - openshift
+          - openshift-images
+
