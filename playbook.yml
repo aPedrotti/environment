@@ -434,9 +434,10 @@
     - block: # Cortex - Install
       - name: Cortex - Unpack
         become: true
-        ansible.builtin.shell:
-        
-          cmd: "tar xf /home/{{ ansible_user}}/Downloads/cortex.tar.gz"
+        ansible.builtin.unarchive:
+          src: /home/{{ ansible_user}}/Downloads/cortex.tar.gz
+          dest: /home/{{ ansible_user}}/Downloads/
+          remote_src: yes
       - name: Cortex - Create directory
         become: true
         ansible.builtin.file:
@@ -449,6 +450,7 @@
           src: "/home/{{ ansible_user}}/Downloads/cortex.conf"
           dest: "/etc/panw/cortex.conf"
           mode: "0755" 
+          remote_src: "yes"
       - name: Cortex - Install Packages
         become: true
         ansible.builtin.apt: 
