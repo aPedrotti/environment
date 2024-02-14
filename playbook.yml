@@ -18,25 +18,25 @@
   tasks:
     - block: # Disable IPv6
       - name: Disable IPv6 as default
-        become: "yes"
+        become: true
         lineinfile:
             path: /etc/sysctl.conf
             line: net.ipv6.conf.default.disable_ipv6=1
             state: present
       - name: Disable IPv6 configuration
-        become: "yes"
+        become: true
         lineinfile:
             path: /etc/sysctl.conf
             line: net.ipv6.conf.all.disable_ipv6=1
             state: present
       - name: Disable IPv6 startup
-        become: "yes"
+        become: true
         lineinfile:
             path: /etc/sysctl.conf
             line: net.ipv6.conf.lo.disable_ipv6=1
             state: present
       - name: Restart service
-        become: "yes"
+        become: true
         shell:
           cmd: "sysctl -p"
       rescue:
@@ -263,7 +263,7 @@
     
     - block: # Docker Stuff
         - name: Installing Docker
-          become: "yes"
+          become: true
           apt:
             name: "docker-ce"
             install_recommends: "yes"
@@ -425,7 +425,7 @@
 # kernel 
     - block:
       - name: Update kernel startup
-        become: "yes"
+        become: true
         shell:
           cmd: "kernelstub -v -k /boot/vmlinuz-6.2.0-34-generic -i /boot/initrd.img-6.2.0-34-generic"
 
@@ -433,24 +433,24 @@
 # Cortex
     - block: # Cortex - Install
       - name: Cortex - Unpack
-        become: "yes"
+        become: true
         ansible.builtin.shell:
         
           cmd: "tar xf /home/{{ ansible_user}}/Downloads/cortex.tar.gz"
       - name: Cortex - Create directory
-        become: "yes"
+        become: true
         ansible.builtin.file:
             path: "/etc/panw/"
             state: directory
             mode: "0755"
       - name: Cortex - copy configuration
-        become: "yes"
+        become: true
         ansible.builtin.copy:
           src: "/home/{{ ansible_user}}/Downloads/cortex.conf"
           dest: "/etc/panw/cortex.conf"
           mode: "0755" 
       - name: Cortex - Install Packages
-        become: "yes"
+        become: true
         ansible.builtin.apt: 
           update_cache: "yes"
           install_recommends: 'yes'
@@ -458,20 +458,20 @@
           deb: "/home/{{ ansible_user}}/Downloads/cortex-8.1.1.112729.deb"
     - block: # Cortex - Execute
       - name: Cortex - Execute Runtime
-        become: "yes"
+        become: true
         shell:
           cmd: "/opt/traps/bin/cytool runtime start all"
       - name: Cortex - Generate logs
-        become: "yes"
+        become: true
         shell:
           cmd: "/opt/traps/bin/cytool log collect"
     - block: # Cortex - Execute run
       - name: Cortex - Execute Run
-        become: "yes"
+        become: true
         ansible.builtin.shell:
           cmd: "/opt/traps/bin/cytool scan start"
       - name: Cortex - Check Scan
-        become: "yes"
+        become: true
         ansible.builtin.shell:
           cmd: "/opt/traps/bin/cytool scan query"
 
