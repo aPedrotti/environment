@@ -11,6 +11,7 @@
     - hashicorp_repository_url: "https://apt.releases.hashicorp.com"
     - hashicorp_repository_key_url: '{{ hashicorp_repository_url }}/gpg'
     - kind_version: "v0.21"
+    - kubectl_version: "v1.29.1"
     - slack_version: "4.36.140"
     - stern_version: "1.11.0"
 
@@ -74,8 +75,16 @@
           - flameshot
           - fonts-hack
           - htop
-          - linux-headers-6.2.0-39-generic
-          - linux-image-6.2.0-39-generic
+          - linux-buildinfo-6.2.0-34-generic
+          - linux-cloud-tools-6.2.0-34-generic
+          - linux-image-6.2.0-34-generic
+          - linux-headers-6.2.0-34-generic
+          - linux-modules-6.2.0-34-generic
+          - linux-modules-extra-6.2.0-34-generic
+          - linux-hwe-6.2-headers-6.2.0-34
+          - linux-hwe-6.2-tools-6.2.0-34
+          - linux-hwe-6.2-cloud-tools-6.2.0-34
+          - linux-tools-6.2.0-34-generic
           - kernelstub
           - keepassxc
           - krita
@@ -106,7 +115,7 @@
       - name: Install Homebrew
         shell: 
           cmd: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    
+
     - block: ## Install Keys and Repos
       - name: Install MS Teams Key
         become: true
@@ -286,28 +295,28 @@
             #remote_src: 'yes'
         
     - block: # Kubernetes Stuffs 
-        - name: Installing Kubectl latest
-          become: true
-          shell:
-            cmd: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-        - name: Moving Kubectl and set permissions
-          become: true
-          ansible.builtin.file:
-            src: kubectl 
-            dest: /usr/local/bin/kubectl
-            mode: "0755"
+        #- name: Installing Kubectl latest
+        #  become: true
+        #  shell:
+        #    cmd: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         - name: Downloading Kubectx and Kubens
           become: true
           git:
             repo: https://github.com/ahmetb/kubectx
-            dest: /opt/kubectx
+            dest: /opt/kube
+        - name: Installing Kubectl {{ kubectl_version }}
+          become: true
+          ansible.builtin.get_url:
+            url: "https://dl.k8s.io/release/{{ kubectl_version }}/bin/linux/amd64/kubectl"
+            dest: /opt/kube/kubectl
         - name: Creating Symlink to kubectx and kubens
           become: true
           file:
-            src: /opt/kubectx/{{ item }}
+            src: /opt/kube/{{ item }}
             dest: /usr/local/bin/{{ item }}
             state: link
           with_items:
+            - kubectl
             - kubectx
             - kubens
         - name: Installing Kind {{ kind_version }}
@@ -322,12 +331,12 @@
           become: true
           shell:
             cmd: chmod 770 /usr/local/bin/kind
-        - name: Installing Stern {{ stern_version }} # allows you to tail multiple pods on Kubernetes and multiple containers within the pod. Each result is color coded for quicker debugging.
-          become: true
-          get_url:
-            url: https://github.com/wercker/stern/releases/download/{{ stern_version }}/stern_linux_amd64
-            dest: /usr/local/bin/stern
-            mode: 755
+        #- name: Installing Stern {{ stern_version }} # allows you to tail multiple pods on Kubernetes and multiple containers within the pod. Each result is color coded for quicker debugging.
+        #  become: true
+        #  get_url:
+        #    url: https://github.com/wercker/stern/releases/download/{{ stern_version }}/stern_linux_amd64
+        #    dest: /usr/local/bin/stern
+        #    mode: 755
             #remote_src: 'yes'
         
     - block: # Communicators
@@ -367,7 +376,7 @@
             repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
             dest: $HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
           when: ohmyzsh.rc != 0
-        - name: Configure Terminal Extension zsh-syntax-highlighting - It enables highlighting of commands whilst they are typed at a zsh prompt into an interactive terminal.
+        - name: Configure Terminal Extension zsh-auto-suggestions 
           git:
             repo: https://github.com/zsh-users/zsh-autosuggestions
             dest: $HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions
@@ -403,12 +412,12 @@
             line: plugins=(git docker docker-compose zsh-syntax-highlighting zsh-autosuggestions)
         - name: Creating ZSH Completion
           file:
-            src: /opt/kubectx/completion/{{ item }}
+            src: /opt/kube/completion/{{ item }}
             dest: /home/{{ ansible_user }}/.oh-my-zsh/completions/_{{ item }}
             state: link
           with_items:
-            - kubectx.zsh
-            - kubens.zsh
+            - _kubectx.zsh
+            - _kubens.zsh
 
 ## Security
 
@@ -418,7 +427,7 @@
       - name: Update kernel startup
         become: "yes"
         shell:
-          cmd: "kernelstub -v -k /boot/vmlinuz-6.2.0-39-generic -i /boot/initrd.img-6.2.0-39-generic"
+          cmd: "kernelstub -v -k /boot/vmlinuz-6.2.0-34-generic -i /boot/initrd.img-6.2.0-34-generic"
 
 
 # Cortex
@@ -426,7 +435,8 @@
       - name: Cortex - Unpack
         become: "yes"
         ansible.builtin.shell:
-          cmd: "tar xf $HOME/Downloads/cortex-8.1.1.112729.tar.gz"
+        
+          cmd: "tar xf /home/{{ ansible_user}}/Downloads/cortex.tar.gz"
       - name: Cortex - Create directory
         become: "yes"
         ansible.builtin.file:
@@ -436,7 +446,7 @@
       - name: Cortex - copy configuration
         become: "yes"
         ansible.builtin.copy:
-          src: "$HOME/Downloads/cortex.conf"
+          src: "/home/{{ ansible_user}}/Downloads/cortex.conf"
           dest: "/etc/panw/cortex.conf"
           mode: "0755" 
       - name: Cortex - Install Packages
@@ -445,7 +455,7 @@
           update_cache: "yes"
           install_recommends: 'yes'
           state: present
-          deb: "$HOME/Downloads/cortex-8.1.1.112729.deb"
+          deb: "/home/{{ ansible_user}}/Downloads/cortex-8.1.1.112729.deb"
     - block: # Cortex - Execute
       - name: Cortex - Execute Runtime
         become: "yes"
@@ -473,7 +483,7 @@
       - name: Installer permission
         become: true
         ansible.builtin.file:
-          src: "$HOME/Downloads/sep"
+          src: "/home/{{ ansible_user}}/Downloads/sep"
           mode: "u+x"
       - name: Installer permission
         become: true
