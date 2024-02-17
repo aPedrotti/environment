@@ -11,24 +11,22 @@
           repo: git@github.com:aPedrotti/{{ item }}.git
           dest: /home/{{ ansible_user }}/code/github/{{ item }}
         loop:
+          - abouts
+          - ansible-linuxtips
           - apedrotti.github.io
           - apedrotti
-          - badges
-          - ansible-linuxtips
           - argocd-poc
-          - abouts
-          - eks-with-istio
+          - badges
           - DevOpsEngineerExpress
           - dotfiles
           - docker-descomplicando
+          - eks-with-istio
           - gitlab
-          - kubernetes-local-cluster
           - kubernetes
           - python-linuxtips
           - python-curso-em-video
-          - projetos-noting
           - sample-apps
-          - shelling
+          - shelling`
           - self 
           - take-home-assignment-main
           - terraforming
