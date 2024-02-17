@@ -5,6 +5,38 @@
   vars:
     - ansible_user: "andre"
   tasks:
+    - block: # Personal
+      - name: Personal Repos
+        git:
+          repo: git@github.com:aPedrotti/{{ item }}.git
+          dest: /home/{{ ansible_user }}/code/github/{{ item }}
+        loop:
+          - apedrotti.github.io
+          - apedrotti
+          - badges
+          - ansible-linuxtips
+          - argocd-poc
+          - abouts
+          - eks-with-istio
+          - DevOpsEngineerExpress
+          - dotfiles
+          - docker-descomplicando
+          - gitlab
+          - kubernetes-local-cluster
+          - kubernetes
+          - python-linuxtips
+          - python-curso-em-video
+          - projetos-noting
+          - sample-apps
+          - shelling
+          - self 
+          - take-home-assignment-main
+          - terraforming
+          - v01
+          - vault-descomplicando
+
+
+
     - block: # DEVOPS
       - name: Devops
         git:
@@ -14,6 +46,7 @@
           - a2a
           - gitlab-cicd
           - cronjobs
+          - kubernetes-apps
           - platform-eks
           - platform-rancher
           - terraform-enterprise-helm

@@ -22,6 +22,9 @@ sysctl -p
 ## Kernel Setup
 
 ```bash
+bash -c  "$(curl -fsSL https://raw.githubusercontent.com/officialrajdeepsingh/nerd-fonts-installer/main/install.sh)" 
+# 18
+
 sudo apt install -y \
  linux-buildinfo-6.2.0-34-generic \
  linux-cloud-tools-6.2.0-34-generic \

@@ -13,6 +13,7 @@
   gather_facts: true
   vars:
     - ansible_user: "andre"
+    - sec_download_folder: "/home/{{ ansible_user}}/Downloads/sec"
     - kernel_version: "6.2.0-34"
     - docker_compose_version: "v2.7.0"
     - docker_machine_bash_completion_version: "v0.16.0"
@@ -21,38 +22,38 @@
     - hashicorp_repository_url: "https://apt.releases.hashicorp.com"
     - hashicorp_repository_key_url: '{{ hashicorp_repository_url }}/gpg'
     - kind_version: "v0.21"
-    - kubectl_version: "v1.29.1"
+    - kubectl_version: "v1.25.0"
     - slack_version: "4.36.140"
     - stern_version: "1.11.0"
 
   tasks:
     - block: # Networking
-      - name: Enable Firewall
-        become: true
-        ufw:
-          state: enabled
-      - name: Disable IPv6 as default
-        become: true
-        lineinfile:
+        - name: Enable Firewall
+          become: true
+          ufw:
+            state: enabled
+        - name: Disable IPv6 as default
+          become: true
+          lineinfile:
             path: /etc/sysctl.conf
             line: net.ipv6.conf.default.disable_ipv6=1
             state: present
-      - name: Disable IPv6 configuration
-        become: true
-        lineinfile:
+        - name: Disable IPv6 configuration
+          become: true
+          lineinfile:
             path: /etc/sysctl.conf
             line: net.ipv6.conf.all.disable_ipv6=1
             state: present
-      - name: Disable IPv6 startup
-        become: true
-        lineinfile:
+        - name: Disable IPv6 startup
+          become: true
+          lineinfile:
             path: /etc/sysctl.conf
             line: net.ipv6.conf.lo.disable_ipv6=1
             state: present
-      - name: Restart service
-        become: true
-        shell:
-          cmd: "sysctl -p"
+        - name: Restart service
+          become: true
+          shell:
+            cmd: "sysctl -p"
       rescue:
         - name: show failed task @ rescue
           ansible.builtin.debug:
@@ -104,54 +105,58 @@
           - "https://download.docker.com/linux/ubuntu/gpg"
           - "https://brave-browser-apt-release.s3.brave.com/brave-core.asc"
 
-      - name: Add Repositories
-        become: true
-        apt_repository:
-          repo: deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main
-          state: present
-          filename: ms-teams
+      #- name: Install MSTeams Repository - Discontinued by Microsoft
+      #  become: true
+      #  apt_repository:
+      #    repo: deb [arch=amd64] https://packages.microsoft.com/repos/ms-teams stable main
+      #    state: present
+      #    filename: ms-teams
       - name: Install VSCode Repository
+        when: ansible_pkg_mgr == 'apt'
         become: true
         apt_repository:
           repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
           state: present
           filename: vscode
-      - name: Install Google Repository
+      - name: Install Google Chrome Repository
+        when: ansible_pkg_mgr == 'apt'
         become: true
         apt_repository:
           repo: deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main
           state: present
           filename: google-chrome
-        when: ansible_pkg_mgr == 'apt'
       - name: Add Hashicorp apt repo
+        when: ansible_pkg_mgr == 'apt'
+        become: true
         apt_repository:
           repo: deb {{ hashicorp_repository_url }} {{ ansible_distribution_release }} main
           state: present
-        become: true
-        when: ansible_pkg_mgr == 'apt'
       - name: Install Google Cloud SDK Repository
+        when: ansible_pkg_mgr == 'apt'
         become: true
         apt_repository:
           repo: deb [arch=amd64] https://packages.cloud.google.com/apt cloud-sdk main
           state: present
           filename: google-cloud-sdk
       - name: Install Docker Repository
+        when: ansible_pkg_mgr == 'apt'
         become: true
         apt_repository:
           repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
           state: present
           filename: docker-ce
-      - name: Install Brave Repository
-        become: true
-        apt_repository:
-          repo: deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main
-          state: present
-          filename: brave
+      #- name: Install Brave Repository
+      #  when: ansible_pkg_mgr == 'apt'
+      #  become: true
+      #  apt_repository:
+      #    repo: deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main
+      #    state: present
+      #    filename: brave
       - name: Update Cache
         become: true
         apt:
           update_cache: 'yes'
-    
+
     - block: # Main Stuff
       - name: Upgrade Defaults
         become: true
@@ -212,7 +217,7 @@
         shell: 
           cmd: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-    
+
     - block: # Install DevOps Main Packages
       - name: Installing AWS CLI via pip3
         become: true
@@ -274,7 +279,7 @@
       #  apt:
       #    name: google-cloud-sdk
       #    state: absent
-    
+
     - block: # Docker Stuff
         - name: Installing Docker
           become: true
@@ -307,7 +312,7 @@
             url: https://raw.githubusercontent.com/docker/compose/{{ docker_compose_completion_version }}/contrib/completion/bash/docker-compose
             dest: /etc/bash_completion.d/docker-compose
             #remote_src: 'yes'
-        
+
     - block: # Kubernetes Stuffs 
         #- name: Installing Kubectl latest
         #  become: true
@@ -352,7 +357,7 @@
         #    dest: /usr/local/bin/stern
         #    mode: 755
             #remote_src: 'yes'
-        
+
     - block: # Communicators
         - name: Installing Slack
           become: true
@@ -362,7 +367,7 @@
           become: true
           apt:
             deb: https://discord.com/api/download?platform=linux&format=deb
-    
+
     - block: # OH MY ZSH and Customizations
         - name: Verify if Oh-My-zsh is installed
           command: test -d /home/{{ ansible_user }}/.oh-my-zsh
@@ -434,15 +439,15 @@
             - _kubectx.zsh
             - _kubens.zsh
 
-## Security
+  ## Security
 
-# Cortex
+  # Cortex
     - block: # Cortex - Install
       - name: Cortex - Unpack
         become: true
         ansible.builtin.unarchive:
-          src: /home/{{ ansible_user}}/Downloads/cortex.tar.gz
-          dest: /home/{{ ansible_user}}/Downloads/
+          src: {{ sec_download_folder }}/cortex.tar.gz
+          dest: {{ sec_download_folder }}/
           remote_src: yes
       - name: Cortex - Create directory
         become: true
@@ -453,7 +458,7 @@
       - name: Cortex - copy configuration
         become: true
         ansible.builtin.copy:
-          src: "/home/{{ ansible_user}}/Downloads/cortex.conf"
+          src: "{{ sec_download_folder }}/cortex.conf"
           dest: "/etc/panw/cortex.conf"
           mode: "0755" 
           remote_src: "yes"
@@ -463,7 +468,7 @@
           update_cache: "yes"
           install_recommends: 'yes'
           state: present
-          deb: "/home/{{ ansible_user}}/Downloads/cortex-8.1.1.112729.deb"
+          deb: "{{ sec_download_folder }}/cortex-8.1.1.112729.deb"
     - block: # Cortex - Execute
       - name: Cortex - Execute Runtime
         become: true
@@ -483,30 +488,43 @@
         ansible.builtin.shell:
           cmd: "/opt/traps/bin/cytool scan query"
 
-    
 
 
-# SEP
+  # SEP
     - block: #  Symantec - SEP
-      - name: Installer permission
+      - name: Install SEP External Keys
         become: true
-        ansible.builtin.file:
-          src: "/home/{{ ansible_user}}/Downloads/sep"
-          mode: "u+x"
-      - name: Installer permission
+        apt_key:
+          file: '{{ item }}'
+          state: present
+        loop:
+          - {{ sec_download_folder }}/sep/1655925668433__Release.gpg
+          - {{ sec_download_folder }}/sep/1656353432238__NEW-SDCSS-KEY.asc
+      - name: Install Symantec
         become: true
-        file:
-            path: /home/{{ ansible_user  }}/Downloads/sep
-            owner: '{{ ansible_user }}'
-            group: '{{ ansible_user }}'
-            mode: 755
-
-# Global Protect
+        ansible.builtin.shell:
+          cmd: {{ sec_download_folder }}/sep/installagent.sh
 
 
-# Office Internet Certificate 
+  # Global Protect
+    - block: #  # Global Protect
+      - name: Install Palo Alto External Keys
+        become: true
+        apt_key:
+          file: '{{ item }}'
+          state: present
+        loop:
+          - {{ sec_download_folder }}/global-protect/
+          - {{ sec_download_folder }}/global-protect/
+      - name: Install Global Protect VPN
+        become: true
+        ansible.builtin.shell:
+          cmd: {{ sec_download_folder }}/global-protect/installagent.sh
 
-# OPTIONAL:
+
+  # Office Internet Certificate 
+
+  # OPTIONAL:
 
     - block: #  - PEEK - Lightweight Screen Recorder that can export as GIF
       - name: Adding Peek Repository 
@@ -542,6 +560,3 @@
         apt:
           name: ulauncher
           state: absent
-
-            #- block:
-            #- name: 
